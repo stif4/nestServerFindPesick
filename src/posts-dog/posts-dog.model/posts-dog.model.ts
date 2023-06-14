@@ -31,9 +31,11 @@ export class PostsDog {
   @Prop()
   phone: string;
   @Prop()
-  vk: string;
+  usernameTg: string;
   @Prop()
   comment: string;
+  @Prop()
+  photo: string;
 }
 const PostsDogModel = SchemaFactory.createForClass(PostsDog);
 PostsDogModel.index({ coords: '2dsphere' });

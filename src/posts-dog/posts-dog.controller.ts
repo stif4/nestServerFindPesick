@@ -7,7 +7,7 @@ import {
   Post,
   Put,
   UsePipes,
-  Query
+  Query,
 } from '@nestjs/common/decorators';
 import { Controller } from '@nestjs/common';
 import { PostsDogService } from './posts-dog.service';

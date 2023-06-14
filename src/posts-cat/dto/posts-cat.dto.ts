@@ -1,5 +1,4 @@
 import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
-
 export class PostCatDto {
   @IsString()
   userId: string;
@@ -21,7 +20,9 @@ export class PostCatDto {
   @IsString()
   phone: string;
   @IsString()
-  vk: string;
+  usernameTg: string;
   @IsString()
   comment: string;
+  @IsString()
+  photo: string;
 }

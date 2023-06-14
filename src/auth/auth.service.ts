@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './auth.constants';
 import { User, UserDocument } from 'src/user/user.model/user.model';
 import { AuthDto } from './dto/auth.dto';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -65,6 +64,9 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.findByEmail(email);
+    if (user && user.block) {
+      throw new UnauthorizedException('User is blocked!');
+    }
     if (!user) throw new UnauthorizedException('User not found');
     const isValidPassword = await compare(password, user.password);
     if (!isValidPassword) throw new UnauthorizedException('Invalid password');

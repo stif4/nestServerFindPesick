@@ -31,9 +31,11 @@ export class PostsCat {
   @Prop()
   phone: string;
   @Prop()
-  vk: string;
+  usernameTg: string;
   @Prop()
   comment: string;
+  @Prop()
+  photo: string;
 }
 const PostsCatModel = SchemaFactory.createForClass(PostsCat);
 PostsCatModel.index({ coords: '2dsphere' });

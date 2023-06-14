@@ -21,7 +21,9 @@ export class PostDogDto {
   @IsString()
   phone: string;
   @IsString()
-  vk: string;
+  usernameTg: string;
   @IsString()
   comment: string;
+  @IsString()
+  photo: string;
 }

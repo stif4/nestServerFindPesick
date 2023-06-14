@@ -10,6 +10,8 @@ import { ColorCatModule } from './color-cat/color-cat.module';
 import { ColorDogModule } from './color-dog/color-dog.module';
 import { PostsCatModule } from './posts-cat/posts-cat.module';
 import { PostsDogModule } from './posts-dog/posts-dog.module';
+import { FileModule } from './file/file.module';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { PostsDogModule } from './posts-dog/posts-dog.module';
     ColorDogModule,
     PostsCatModule,
     PostsDogModule,
+    FileModule,
+    TelegramModule,
   ],
 })
 export class AppModule {}

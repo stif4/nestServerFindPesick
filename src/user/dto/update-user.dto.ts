@@ -8,4 +8,9 @@ export class UpdateDto {
   password?: string;
 
   isAdmin?: boolean;
+
+  phone?: string;
+  comment?: string;
+  usernameTg?: string;
+  block?: boolean;
 }

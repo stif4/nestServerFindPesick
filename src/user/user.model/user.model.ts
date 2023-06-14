@@ -16,5 +16,17 @@ export class User {
 
   @Prop({ default: false })
   isAdmin?: boolean;
+
+  @Prop({ default: '' })
+  phone?: string;
+
+  @Prop({ default: '' })
+  usernameTg?: string;
+
+  @Prop({ default: '' })
+  comment?: string;
+
+  @Prop({ default: false })
+  block?: boolean;
 }
 export const UserModel = SchemaFactory.createForClass(User);

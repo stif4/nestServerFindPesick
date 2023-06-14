@@ -2,23 +2,42 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSalt, hash } from 'bcryptjs';
 import { Model } from 'mongoose';
+import {
+  PostsCat,
+  PostsCatDocument,
+} from 'src/posts-cat/posts-cat.model/posts-cat.model';
+import {
+  PostsDog,
+  PostsDogDocument,
+} from 'src/posts-dog/posts-dog.model/posts-dog.model';
 import { UpdateDto } from './dto/update-user.dto';
-import { User, UserDocument, UserModel } from './user.model/user.model';
+import { User, UserDocument } from './user.model/user.model';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
+    @InjectModel(PostsCat.name)
+    private readonly catModel: Model<PostsCatDocument>,
+    @InjectModel(PostsDog.name)
+    private readonly dogModel: Model<PostsDogDocument>,
   ) {}
 
   async byId(_id: string) {
     const user = await this.userModel.findById(_id);
     if (!user) throw new NotFoundException('User not found');
-    return user;
+
+    const postsCat = await this.catModel.find({ userId: user._id });
+    await this.catModel.populate(postsCat, { path: 'breed color' });
+    const postsDog = await this.dogModel.find({ userId: user._id });
+    await this.dogModel.populate(postsDog, { path: 'breed color' });
+
+    return { user, advertisments: [...postsDog, ...postsCat] };
   }
 
   async updateProfile(_id: string, data: UpdateDto) {
+    console.log(_id, data);
     const user = await this.userModel.findById(_id);
     const isSameUser = await this.userModel.findOne({ email: data.email });
 
@@ -33,10 +52,15 @@ export class UserService {
       }
 
       user.email = data.email;
+      user.phone = data.phone;
+      user.comment = data.comment;
+      user.usernameTg = data.usernameTg;
+      user.block = data.block;
+
       if (data.isAdmin || data.isAdmin === false) user.isAdmin = data.isAdmin;
 
       await user.save();
-      return;
+      return user;
     }
 
     throw new NotFoundException('User not found');
@@ -49,11 +73,13 @@ export class UserService {
   async getAll(searchTerm?: string): Promise<User[]> {
     let options = {};
 
+    console.log(searchTerm);
+
     if (searchTerm) {
       options = {
         $or: [
           {
-            email: new RegExp(searchTerm, 'i'),
+            login: new RegExp(searchTerm, 'i'),
           },
         ],
       };
