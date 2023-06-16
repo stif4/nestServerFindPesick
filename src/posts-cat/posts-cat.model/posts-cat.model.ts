@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { ColorCat } from 'src/color-cat/color-cat.model/color-cat.model';
-import { BreadCat } from 'src/bread-cat/bread-cat.model/bread-cat.model';
+import { ColorCat } from '../../color-cat/color-cat.model/color-cat.model';
+import { BreadCat } from '../../bread-cat/bread-cat.model/bread-cat.model';
 import { Type } from 'class-transformer';
 
 export type PostsCatDocument = HydratedDocument<PostsCat>;

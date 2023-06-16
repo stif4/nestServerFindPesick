@@ -1,4 +1,4 @@
-import { Auth } from 'src/auth/decorator/auth.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 import {
   Body,
   Controller,
@@ -13,10 +13,10 @@ import {
   ValidationPipe,
   Query,
 } from '@nestjs/common';
-import { IdValidationPipe } from 'src/pipes/id.validations.pipe';
+import { IdValidationPipe } from '../pipes/id.validations.pipe';
 import { PostCatDto } from './dto/posts-cat.dto';
 import { PostsCatService } from './posts-cat.service';
-import { User } from 'src/user/user.decorators/user.decorators';
+import { User } from './../user/user.decorators/user.decorators';
 
 @Controller('posts-cat')
 export class PostsCatController {

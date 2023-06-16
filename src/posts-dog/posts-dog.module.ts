@@ -3,8 +3,8 @@ import { PostsDogService } from './posts-dog.service';
 import { PostsDogController } from './posts-dog.controller';
 import { PostsDogModel } from './posts-dog.model/posts-dog.model';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TelegramModule } from 'src/telegram/telegram.module';
-import { TelegramModel } from 'src/telegram/telegram.model/telegram.model';
+import { TelegramModule } from '../telegram/telegram.module';
+import { TelegramModel } from '../telegram/telegram.model/telegram.model';
 
 @Module({
   providers: [PostsDogService],

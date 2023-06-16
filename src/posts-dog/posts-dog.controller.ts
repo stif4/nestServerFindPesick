@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common/decorators';
 import { Controller } from '@nestjs/common';
 import { PostsDogService } from './posts-dog.service';
-import { Auth } from 'src/auth/decorator/auth.decorator';
+import { Auth } from '../auth/decorator/auth.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes';
-import { IdValidationPipe } from 'src/pipes/id.validations.pipe';
-import { User } from 'src/user/user.decorators/user.decorators';
+import { IdValidationPipe } from '../pipes/id.validations.pipe';
+import { User } from '../user/user.decorators/user.decorators';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { PostDogDto } from './dto/posts-dog.dto';
 

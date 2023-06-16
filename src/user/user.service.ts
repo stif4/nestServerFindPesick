@@ -1,15 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSalt, hash } from 'bcryptjs';
+import { Request } from 'express';
 import { Model } from 'mongoose';
 import {
   PostsCat,
   PostsCatDocument,
-} from 'src/posts-cat/posts-cat.model/posts-cat.model';
+} from '../posts-cat/posts-cat.model/posts-cat.model';
 import {
   PostsDog,
   PostsDogDocument,
-} from 'src/posts-dog/posts-dog.model/posts-dog.model';
+} from '../posts-dog/posts-dog.model/posts-dog.model';
 import { UpdateDto } from './dto/update-user.dto';
 import { User, UserDocument } from './user.model/user.model';
 
@@ -27,42 +32,42 @@ export class UserService {
   async byId(_id: string) {
     const user = await this.userModel.findById(_id);
     if (!user) throw new NotFoundException('User not found');
-
     const postsCat = await this.catModel.find({ userId: user._id });
     await this.catModel.populate(postsCat, { path: 'breed color' });
     const postsDog = await this.dogModel.find({ userId: user._id });
     await this.dogModel.populate(postsDog, { path: 'breed color' });
-
     return { user, advertisments: [...postsDog, ...postsCat] };
   }
 
-  async updateProfile(_id: string, data: UpdateDto) {
-    console.log(_id, data);
-    const user = await this.userModel.findById(_id);
-    const isSameUser = await this.userModel.findOne({ email: data.email });
+  async updateProfile(id: string, data: UpdateDto, _id: string) {
+    if (id === _id.toString()) {
+      const user = await this.userModel.findById(_id);
+      const isSameUser = await this.userModel.findOne({ email: data.email });
 
-    if (isSameUser && String(_id) !== String(isSameUser._id)) {
-      throw new NotFoundException('Email busy');
-    }
-
-    if (user) {
-      if (data.password) {
-        const salt = await genSalt(10);
-        user.password = await hash(data.password, salt);
+      if (isSameUser && String(_id) !== String(isSameUser._id)) {
+        throw new NotFoundException('Email busy');
       }
 
-      user.email = data.email;
-      user.phone = data.phone;
-      user.comment = data.comment;
-      user.usernameTg = data.usernameTg;
-      user.block = data.block;
+      if (user) {
+        if (data.password) {
+          const salt = await genSalt(10);
+          user.password = await hash(data.password, salt);
+        }
 
-      if (data.isAdmin || data.isAdmin === false) user.isAdmin = data.isAdmin;
+        user.email = data.email;
+        user.phone = data.phone;
+        user.comment = data.comment;
+        user.usernameTg = data.usernameTg;
+        user.block = data.block;
 
-      await user.save();
-      return user;
+        // if (data.isAdmin || data.isAdmin === false) user.isAdmin = data.isAdmin;
+
+        await user.save();
+        return user;
+      }
+    } else {
+      throw new ForbiddenException('Forbidden');
     }
-
     throw new NotFoundException('User not found');
   }
 

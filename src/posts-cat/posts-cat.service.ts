@@ -1,3 +1,4 @@
+import { BreadCat } from './../bread-cat/bread-cat.model/bread-cat.model';
 import {
   HttpException,
   HttpStatus,
@@ -6,26 +7,28 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PipelineStage, Types } from 'mongoose';
+import { BreadCatDocument } from 'src/bread-cat/bread-cat.model/bread-cat.model';
 import {
   Telegram,
   TelegramDocument,
 } from '../telegram/telegram.model/telegram.model';
 import { TelegramService } from '../telegram/telegram.service';
-import { PostDogDto } from './dto/posts-dog.dto';
-import { PostsDog, PostsDogDocument } from './posts-dog.model/posts-dog.model';
+import { PostCatDto } from './dto/posts-cat.dto';
+import { PostsCat, PostsCatDocument } from './posts-cat.model/posts-cat.model';
 
 @Injectable()
-export class PostsDogService {
+export class PostsCatService {
   constructor(
-    @InjectModel(PostsDog.name)
-    private readonly postsDogModel: Model<PostsDogDocument>,
+    @InjectModel(PostsCat.name)
+    private readonly postsCatModel: Model<PostsCatDocument>,
     @InjectModel(Telegram.name)
     private readonly telegramModel: Model<TelegramDocument>,
     private readonly telegramService: TelegramService,
+    @InjectModel(BreadCat.name)
+    private readonly breedCatModel: Model<BreadCatDocument>,
   ) {}
 
   async getAll(dataQuery) {
-    console.log(dataQuery);
     if (Object.keys(dataQuery).length !== 0) {
       for (let key in dataQuery) {
         if (key !== 'coords') {
@@ -62,12 +65,13 @@ export class PostsDogService {
       ];
 
       if (dataQuery.coords !== 'none') {
+        const coords = dataQuery.coords.split(' ').map(Number);
         options.unshift({
           $geoNear: {
             near: {
               type: 'Point',
-              coordinates: dataQuery.coords.split(' ').map(Number),
-            }, //[-73.99279, 40.719296],
+              coordinates: coords,
+            },
             distanceField: 'dist.calculated',
             maxDistance: 10000,
             includeLocs: 'dist.location',
@@ -76,54 +80,61 @@ export class PostsDogService {
         });
       }
 
-      //console.log(new Date(dataQuery.date).toISOString().split('T')[0]);
-
-      const arg = await this.postsDogModel.aggregate(options);
-
-      await this.postsDogModel.populate(arg, { path: 'breed color' });
+      const arg = await this.postsCatModel.aggregate(options);
+      await this.postsCatModel.populate(arg, { path: 'breed color' });
       return arg;
     } else {
-      return this.postsDogModel.find().populate('breed color').exec();
+      return this.postsCatModel.find().populate('breed color').exec();
     }
   }
 
-  async create(data: PostDogDto) {
-    const options: PipelineStage[] = [
-      {
-        $match: {
-          breed: new Types.ObjectId(data.breed),
-          sex: data.sex,
-          type: data.type === 0 ? 1 : 0,
-        },
-      },
-    ];
+  async create(data: PostCatDto) {
+    const checkBreed = await this.breedCatModel.findById(data.breed);
 
-    options.unshift({
-      $geoNear: {
-        near: {
-          type: 'Point',
-          coordinates: data.coords as [number, number],
+    if (checkBreed) {
+      const options: PipelineStage[] = [
+        {
+          $match: {
+            breed: new Types.ObjectId(data.breed),
+            sex: data.sex,
+            type: data.type === 0 ? 1 : 0,
+          },
         },
-        distanceField: 'dist.calculated',
-        maxDistance: 10000,
-        includeLocs: 'dist.location',
-        spherical: true,
-      },
-    });
-    const arg = await this.postsDogModel.aggregate(options);
-    const post = await this.postsDogModel.create({ ...data, dogOrCat: 'dog' });
-    this.sendNotifications(arg, post);
-    return post;
+      ];
+
+      options.unshift({
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: data.coords as [number, number],
+          },
+          distanceField: 'dist.calculated',
+          maxDistance: 10000,
+          includeLocs: 'dist.location',
+          spherical: true,
+        },
+      });
+
+      const arg = await this.postsCatModel.aggregate(options);
+      const post = await this.postsCatModel.create({
+        ...data,
+        dogOrCat: 'cat',
+      });
+      this.sendNotifications(arg, post);
+      return post;
+    } else {
+      throw new NotFoundException('Breed is not found');
+    }
   }
 
   async sendNotifications(similarAdvertisments, advertisment) {
     // if (process.env.NODE_ENV !== 'development')
     //   await this.telegramService.sendPhoto(dto.poster);
 
-    await this.postsDogModel.populate(similarAdvertisments, {
+    await this.postsCatModel.populate(similarAdvertisments, {
       path: 'breed color',
     });
-    await this.postsDogModel.populate(advertisment, { path: 'breed color' });
+    await this.postsCatModel.populate(advertisment, { path: 'breed color' });
 
     const adminTg = await this.telegramModel.find({
       username: 'MarkizBarobas',
@@ -233,28 +244,27 @@ export class PostsDogService {
   }
 
   async getPost(_id: string) {
-    const post = await this.postsDogModel.findById(_id);
+    const post = await this.postsCatModel.findById(_id);
     if (!post) throw new NotFoundException('Post not found');
     return post;
   }
 
   async delete(id: string, userId: string, isAdmin: boolean) {
-    const post = await this.postsDogModel.findById(id);
+    const post = await this.postsCatModel.findById(id);
     if (userId.toString() === post.userId || isAdmin) {
-      return this.postsDogModel.findByIdAndDelete(id);
+      return this.postsCatModel.findByIdAndDelete(id);
     }
     throw new HttpException('Нет прав доступа', HttpStatus.FORBIDDEN);
   }
 
   async updatePost(
     _id: string,
-    data: PostDogDto,
+    data: PostCatDto,
     userId: string,
     isAdmin: boolean,
   ) {
-    console.log(_id);
     if (userId.toString() === data.userId || isAdmin) {
-      return await this.postsDogModel
+      return await this.postsCatModel
         .findByIdAndUpdate(_id, data, { new: true })
         .exec();
     }

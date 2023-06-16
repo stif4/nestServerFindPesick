@@ -1,9 +1,9 @@
-import { User } from 'src/user/user.model/user.model';
+import { User } from '../../user/user.model/user.model';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../../user/user.service';
 import { UserDocument, UserModel } from 'src/user/user.model/user.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';

@@ -31,6 +31,7 @@ export class AuthController {
   }
 
   @UsePipes(new ValidationPipe())
+  @HttpCode(200)
   @Post('register')
   async register(@Body() dto: AuthDto) {
     const oldEmail = await this.AuthService.findByEmail(dto.email);
