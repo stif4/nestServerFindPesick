@@ -12,5 +12,7 @@ jobs:
         run:  npm run test
       - name: Test - e2e test
         run:  npm run test:e2e
-
-
+      - name: Eslint - check linting
+        run:  npm run lint
+      - name: Сode style - edit codeStyle
+        run:  npm run format
