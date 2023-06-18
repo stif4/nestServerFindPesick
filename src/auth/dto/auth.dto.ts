@@ -1,6 +1,6 @@
-import { IsString, Matches, MinLength } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 
-// создать модель регистрации и логинизации отдельно 
+// создать модель регистрации и логинизации отдельно
 export class AuthDto {
   @IsString()
   email: string;
@@ -10,6 +10,6 @@ export class AuthDto {
   @MinLength(6, { message: 'Password cannot be less than 6 characters' })
   @IsString()
   password: string;
-  
+
   confirm?: string;
 }

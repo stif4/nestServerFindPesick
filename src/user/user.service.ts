@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSalt, hash } from 'bcryptjs';
-import { Request } from 'express';
 import { Model } from 'mongoose';
 import {
   PostsCat,
@@ -77,8 +76,6 @@ export class UserService {
 
   async getAll(searchTerm?: string): Promise<User[]> {
     let options = {};
-
-    console.log(searchTerm);
 
     if (searchTerm) {
       options = {

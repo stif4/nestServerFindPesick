@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:4.4.4
+    container_name: mongo
+    restart: always
+    environment:
+       MONGO_INITDB_ROOT_USERNAME: ${MONGO_LOGIN}
+       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data-4.4:/data/db
+    command: --wiredTigerCacheSizeGB 1.5
+
+  server:
+      container_name: server
+      build:
+        context: .
+        target: development
+      volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+      ports:
+      - 3000:3000
+      command: npm run start:dev
+      env_file:
+        - .env
+      depends_on:
+        - mongo

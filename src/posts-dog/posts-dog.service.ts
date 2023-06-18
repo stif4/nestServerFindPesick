@@ -27,7 +27,7 @@ export class PostsDogService {
   async getAll(dataQuery) {
     console.log(dataQuery);
     if (Object.keys(dataQuery).length !== 0) {
-      for (let key in dataQuery) {
+      for (const key in dataQuery) {
         if (key !== 'coords') {
           dataQuery[key] =
             dataQuery[key] === 'none' ? { $exists: true } : dataQuery[key];

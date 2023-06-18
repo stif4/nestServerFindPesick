@@ -8,7 +8,7 @@ import { randomUUID } from 'crypto';
 export class FileService {
   async saveFiles(
     files: Express.Multer.File[],
-    folder: string = 'default',
+    folder = 'default',
   ): Promise<FileResponse[]> {
     const uploadFolder = `${path}/uploads/${folder}`;
     await ensureDir(uploadFolder);

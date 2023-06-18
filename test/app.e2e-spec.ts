@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import mongoose, { disconnect } from 'mongoose';
+import { disconnect } from 'mongoose';
 
 const testCreateUserDTO = {
   login: 'test13231',
@@ -131,6 +131,7 @@ describe('AppController (e2e)', () => {
         .get(`/user/${createdTestUserDTOId}`)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -157,6 +158,7 @@ describe('AppController (e2e)', () => {
         .send(updateData)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -227,6 +229,7 @@ describe('AppController (e2e)', () => {
         .send({ ...newData, coords: '' })
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(400);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -285,6 +288,7 @@ describe('AppController (e2e)', () => {
         .get(`/posts-cat/${idCreatedCat}`)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -310,6 +314,7 @@ describe('AppController (e2e)', () => {
         .get(`/posts-dog/` + idCreatedDog)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -322,6 +327,7 @@ describe('AppController (e2e)', () => {
         .delete(`/posts-dog/` + idCreatedDog)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;
@@ -347,6 +353,7 @@ describe('AppController (e2e)', () => {
         .delete(`/posts-cat/${idCreatedCat}`)
         .set('Authorization', `Bearer ${accesstoken}`)
         .expect(200);
+      return req;
     } catch (error) {
       expect(error).toMatch('Error');
       return error;

@@ -11,6 +11,6 @@ export class BreadDogService {
   ) {}
 
   async getAll() {
-     return this.breadDogModel.find().exec();
+    return this.breadDogModel.find().exec();
   }
 }

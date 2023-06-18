@@ -3,8 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UserService } from '../../user/user.service';
-import { UserDocument, UserModel } from 'src/user/user.model/user.model';
+import { UserDocument } from 'src/user/user.model/user.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -12,7 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ _id }: Pick<UserDocument, '_id'>) {
-    const user = await this.UserModel.findById(_id);
+    const user = await this.userModel.findById(_id);
     return user;
   }
 }

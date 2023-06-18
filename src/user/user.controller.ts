@@ -10,14 +10,12 @@ import {
   Param,
   Put,
   Query,
-  Req,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { User } from './user.decorators/user.decorators';
 import { UpdateDto } from './dto/update-user.dto';
-import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
