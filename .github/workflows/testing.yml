@@ -1,0 +1,16 @@
+name: Test Nest App
+on: push
+jobs: 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository 
+        uses: actions/checkout@v3
+      - name: Install dependecies
+        run:  npm ci
+      - name: Test - unit test
+        run:  npm run test
+      - name: Test - e2e test
+        run:  npm run test:e2e
+
+

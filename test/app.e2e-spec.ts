@@ -4,9 +4,11 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { disconnect } from 'mongoose';
 
+const test = Math.random().toString().substring(2);
+
 const testCreateUserDTO = {
-  login: 'test13231',
-  email: 'test41123321@gmail.com',
+  login: test,
+  email: `test${test}@gmail.com`,
   password: 'Sdd1223!',
   confirm: 'Sdd1223!',
 };
@@ -19,8 +21,8 @@ describe('AppController (e2e)', () => {
   let idCreatedCat: string;
 
   const updateData = {
-    login: 'test13231',
-    email: 'test41123321@gmail.com',
+    login: test,
+    email: `testp${test}@gmail.com`,
     isAdmin: false,
     phone: '',
     usernameTg: '',
